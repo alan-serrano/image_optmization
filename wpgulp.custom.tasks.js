@@ -19,11 +19,6 @@ var imageminGiflossy = require('imagemin-giflossy');
 var imageResize = require('gulp-image-resize');
 
 // CSS related plugins.
-const sass = require( 'gulp-sass' ); // Gulp plugin for Sass compilation.
-const minifycss = require( 'gulp-uglifycss' ); // Minifies CSS files.
-const autoprefixer = require( 'gulp-autoprefixer' ); // Autoprefixing magic.
-const mmq = require( 'gulp-merge-media-queries' ); // Combine matching media queries into one.
-const concat = require( 'gulp-concat' ); // Concatenates CSS files.
 const remember = require( 'gulp-remember' ); //  Adds all the files it has ever seen back into the stream.
 const plumber = require( 'gulp-plumber' ); // Prevent pipe breaking caused by errors from gulp plugins.
 
