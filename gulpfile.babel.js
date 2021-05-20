@@ -124,12 +124,7 @@ require('./wpgulp.custom.tasks')( config );
  */
 gulp.task(
 	'default',
-	gulp.parallel('imagemin', browsersync, () => {
-		// gulp.watch( config.watchPhp, reload ); // Reload on PHP file changes.
-		// gulp.watch( config.watchStyles, gulp.parallel( 'styles' ) ); // Reload on SCSS file changes.
-		// gulp.watch( config.watchStylesVendor, gulp.parallel( 'stylesVendor' ) ); // Reload on SCSS file changes.
-		// gulp.watch( config.watchJsVendor, gulp.series( 'vendorsJS', reload ) ); // Reload on vendorsJS file changes.
-		// gulp.watch( config.watchJsCustom, gulp.series( 'customJS', reload ) ); // Reload on customJS file changes.
-		gulp.watch( config.imgSRC, gulp.series( 'imagemin' ) ); // Reload on customJS file changes.
+	gulp.parallel( 'imagemin', 'webp', () => {
+		gulp.watch( config.imgSRC, gulp.series( 'webp', 'imagemin' ) );
 	})
 );

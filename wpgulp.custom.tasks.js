@@ -17,6 +17,7 @@ var imageminZopfli = require('imagemin-zopfli');
 var imageminMozjpeg = require('imagemin-mozjpeg'); //need to run 'brew install libpng'
 var imageminGiflossy = require('imagemin-giflossy');
 var imageResize = require('gulp-image-resize');
+const webp = require('gulp-webp');
 
 // CSS related plugins.
 const remember = require( 'gulp-remember' ); //  Adds all the files it has ever seen back into the stream.
@@ -46,10 +47,10 @@ module.exports = customTasks;
 
 function customTasks(config) {
 	gulp.task('imagemin', gulp.parallel(imageminOptimize));
+	gulp.task('webp', gulp.parallel(convertToWebP));
 
 	function imageminOptimize() {
 		return gulp.src([config.imgSRC])
-
 			.pipe(cache(imagemin([
 				//png
 				imageminPngquant({
@@ -89,6 +90,14 @@ function customTasks(config) {
 					quality: 83
 				}),
 			])))
-			.pipe(gulp.dest(config.imgDST));
+			.pipe(gulp.dest(config.imgDST))
+			.pipe( notify({ message: '\n\n✅  ===> IMAGEMIN — completed!\n', onLast: true }) );
+	}
+
+	function convertToWebP() {
+		return gulp.src([config.imgSRC])
+			.pipe(webp({quality: 50}))
+			.pipe(gulp.dest(config.imgDST))
+			.pipe( notify({ message: '\n\n✅  ===> CONVERT TO WEBP — completed!\n', onLast: true }) );
 	}
 }
