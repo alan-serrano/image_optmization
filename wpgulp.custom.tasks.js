@@ -48,6 +48,7 @@ module.exports = customTasks;
 function customTasks(config) {
 	gulp.task('imagemin', gulp.parallel(imageminOptimize));
 	gulp.task('webp', gulp.parallel(convertToWebP));
+	gulp.task('compressWebp', gulp.parallel(convertToWebP));
 
 	function imageminOptimize() {
 		return gulp.src([config.imgSRC])
@@ -96,8 +97,54 @@ function customTasks(config) {
 
 	function convertToWebP() {
 		return gulp.src([config.imgSRC])
-			.pipe(webp({quality: 50}))
+			.pipe(webp({method: 6}))
 			.pipe(gulp.dest(config.imgDST))
-			.pipe( notify({ message: '\n\n✅  ===> CONVERT TO WEBP — completed!\n', onLast: true }) );
+			.pipe(notify({ message: '\n\n✅  ===> CONVERT TO WEBP — completed!\n', onLast: true }));
+	}
+	
+	function compressThenConvertWebp() {
+		return gulp.src([config.imgSRC])
+			.pipe(cache(imagemin([
+				//png
+				imageminPngquant({
+					speed: 1,
+					quality: [0.7, 0.9], //lossy settings
+					strip: true,
+					floyd: 1,
+				}),
+				imageminPngcrush(),
+				imageminZopfli({
+					more: true
+					// iterations: 50 // very slow but more effective
+				}),
+				//gif
+				// imagemin.gifsicle({
+				//     interlaced: true,
+				//     optimizationLevel: 3
+				// }),
+				//gif very light lossy, use only one of gifsicle or Giflossy
+				imageminGiflossy({
+					optimizationLevel: 3,
+					optimize: 3, //keep-empty: Preserve empty transparent frames
+					lossy: 2
+				}),
+				//svg
+				imagemin.svgo({
+					plugins: [{
+						removeViewBox: false
+					}]
+				}),
+				//jpg lossless
+				imagemin.jpegtran({
+					progressive: true
+				}),
+				//jpg very light lossy, use vs jpegtran
+				imageminMozjpeg({
+					quality: 83
+				}),
+			])))
+			.pipe(webp({method: 6}))
+			.pipe(gulp.dest(config.imgDST))
+			.pipe(notify({ message: '\n\n✅  ===> CONVERT TO WEBP — completed!\n', onLast: true }));
 	}
 }

@@ -41,6 +41,7 @@
     "start": "gulp",
     "images": "gulp imagemin",
     "webp": "gulp webp",
+    "compressWebp": "gulp compressWebp",
     "clearCache": "gulp clearCache"
   }
 }
